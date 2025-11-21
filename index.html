@@ -1,0 +1,467 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>~ wss.chat</title>
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Segoe UI', sans-serif;
+        }
+        
+        body {
+            background: linear-gradient(160deg, #f5f5f5 0%, #cfcfcf 100%);
+            color: #222;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            transition: background 0.3s ease;
+        }
+        
+        .c {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 60px;
+            width: 100%;
+            max-width: 800px;
+            background: #fff;
+            border: 3px solid #222;
+            border-radius: 12px;
+            padding: 40px;
+            box-shadow: 10px 10px 0 #222;
+            transition: transform 0.2s ease, box-shadow 0.2s ease;
+        }
+        
+        .c:hover {
+            transform: translateY(-3px);
+            box-shadow: 14px 14px 0 #222;
+        }
+        
+        .f {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+            flex: 1 1 300px;
+            min-width: 0;
+        }
+        
+        .f h3 {
+            margin-bottom: 10px;
+            font-size: 1.8rem;
+            border-bottom: 2px solid #222;
+            padding-bottom: 5px;
+            letter-spacing: 0.5px;
+        }
+        
+        .i {
+            padding: 12px 15px;
+            border: 2px solid #222;
+            border-radius: 6px;
+            background: #f5f5f5;
+            font-size: 1rem;
+            transition: all 0.3s ease;
+            outline: none;
+        }
+        
+        .i:hover {
+            transform: translateY(-3px);
+            box-shadow: 5px 5px 0 #222;
+        }
+        
+        .i:focus {
+            transform: translateY(-1px);
+            box-shadow: inset 3px 3px 0 #222;
+            border-color: #000;
+        }
+        
+        .b {
+            padding: 12px;
+            border: 2px solid #222;
+            background: #f5f5f5;
+            cursor: pointer;
+            font-weight: bold;
+            transition: all 0.3s ease;
+        }
+        
+        .b:hover {
+            transform: translateY(-4px);
+            box-shadow: 6px 6px 0 #222;
+        }
+        
+        .b:active {
+            transform: translateY(2px);
+            box-shadow: inset 3px 3px 0 #222;
+            background: #d1d1d1;
+        }
+        
+        .b.d {
+            background: gold;
+        }
+        
+        .b.d:active {
+            background: #e3bf00;
+        }
+        
+        .b.m {
+            background: tomato;
+        }
+        
+        .b.m:active {
+            background: #d63e23;
+        }
+        
+        .cpt {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            align-items: center;
+        }
+        
+        .cpt img {
+            width: 240px;
+            height: 80px;
+            border: 2px solid #222;
+            border-radius: 6px;
+            object-fit: cover;
+            transition: transform 0.2s ease;
+        }
+        
+        .cpt img:hover {
+            transform: translateY(-2px);
+        }
+        
+        .info {
+            flex: 1 1 300px;
+            min-width: 0;
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+            font-size: 0.95rem;
+            line-height: 1.5;
+            border-left: 2px solid #222;
+            padding-left: 20px;
+        }
+        
+        .info h3 {
+            font-size: 1.4rem;
+            border-bottom: 2px solid #222;
+            padding-bottom: 5px;
+            letter-spacing: 0.5px;
+        }
+        
+        .info ul {
+            padding-left: 20px;
+            list-style-type: disc;
+        }
+        
+        .mabel {
+            margin-top: 1rem;
+            display: flex;
+            justify-content: center;
+        }
+        
+        .mabel img {
+            width: 200px;
+            height: auto;
+            max-width: 100%;
+            margin-top: -20px;
+            margin-bottom: -25px;
+        }
+        
+        .error {
+            font-size: 0.9rem;
+            color: #ff3915;
+            font-weight: bold;
+            text-align: center;
+            translate: 0 -13px;
+            margin-bottom: -37px;
+            text-transform: lowercase;
+        }
+        
+        @media (max-width: 768px) {
+            .c {
+                flex-direction: column;
+                gap: 30px;
+                padding: 20px;
+                width: 90%;
+                margin-top: 5rem;
+            }
+            .info {
+                border-left: none;
+                border-top: 2px solid #222;
+                padding-left: 0;
+                padding-top: 15px;
+            }
+            .cpt img {
+                width: 200px;
+                height: 70px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <div class="c">
+        <form class="f" action="/nick" method="POST">
+            <h3 style="display: flex;justify-content: space-between;align-items: baseline;">wss.chat <span style="font-size: 0.5em;font-style: italic;">online: 11</span></h3><input class="i" id="nick" type="text" name="nick" placeholder="username" maxlength="20" required><input class="i" type="password" id="pass"
+                name="pass" placeholder="password (not required for guests)">
+            <div class="cpt"><img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAPAAAABQCAMAAAAQlwhOAAAAP1BMVEUAAABzEkOuTX6iQXKNLF15GEmVNGWiQXLPbp/ObZ7ffq/lhLWrSnuIJ1hzEkPXdqe6WYqwT4Defa7ScaJlBDVJ4/jCAAAAAXRSTlMAQObYZgAABLFJREFUeJzsW&#43;1yqzgMlf5lEpKZ5P0f9k5LsKUjyWBiEy5F3Z1ujbF1dPRlM0unnFIrt9utZvrr9eqnyxZyu1Uhfr0KiKss9y1pCLjSV74kf47hPxfDm8rj8fi2CpvK43FcxDz&#43;sBo8LuAfqKOQhHxUwKxEPjkmXgmYNMX/nywoSRKq5biHdNzALcJ6P8lqb4Z5Mmq/TQxeyMRMPOSBtzadhCnMFb32G/cU5mXmYRjEnI62T6GzEWKWG&#43;ZR4gFnddOAdK7oZVse/2XJMKeg1QB7MqyM2YNjnlY2defn15M8fH09jfVGLbeaHBdaihxAz&#43;eTLMCuBIOGjQGnvKDSxO9AzLDppbuKv9saBVgnKBSCGM7vbVEr5Ga426qqiE6sUBOpyq/6jFY9x7JVHLzV5UrFbLbVNErvf4S7E8Z2NboAy6JJ7HV8VXizE&#43;v17ve75FFZUhbFRniXIHbwlmozpx&#43;cLxhOj&#43;4/ghUwUS4YXo1xDowPgfGlUA1mdHeAqt8ZAeu92GS2hqeGufCwuES&#43;cVYjBooFXaPdrtereOEXsLdlLluNTw3l5JPcC8Z8QxnXxaZ8xIuIXYXUe00PhjOITQEeqXXxMjA8uUJm3gB2N5B9GJkQaSDRcr4vpQxqn4h6k9Ul1TYgw57diEmWgpy7PoOpd438M9jGt4QIbBXoMuA1wR4Oll2mkwUbiLNeagaiV6wryjFQMVTXASIjWMxpDRl0mrvdifSc/lun8cJKEWLHem0Ri53neznv&#43;ZSVZKLJ8/UcvZJZHNfnmfiahVYAodJjYYmAFnlZo&#43;4bSRVYcCVvcbCM0K6AzLuYL1DH9sgSzrRPdTcoXeaNib02wvVodzS1LjFu&#43;BQx7xYmXRQQB6lGNucCuPRLYNhfChXI1tMHKUCcgMJ5ZQHiGbyuQhB5imHp6BDewVJqjHTBU5NYRIZzr1AGsiSAHVrc5SXD5gvC&#43;MfVcRaHPLOy0JPZuzyZ6yDVVjj1XsTL0XWAYpjduL1er/7dpMewo4OARmCDJSVssjy4nWnv8d7JsZHUkiHpzjJMsgyHNx5wO7TcjcFmpDtYihgmbAgKeQZB&#43;XQrNbQq8WFpymHZM5YfrJSF2PWsNNVadJZhfF9vi2oQd&#43;qvcCNHKPcqDDErO8gyw&#43;aJ&#43;MPgr0q0HyAmttQxmxaMdYpAeHrBoHskw6m6yZOZrurov8I0HmjV3kZ50OAqM&#43;xUGdLJcsU9x3pnkLnRY9jj00UcnQ8gbOUVySeXOR85f6pSrNvbKKzCII6uiWAml9LkVsLwK&#43;UnqxWaYaB8XvQqrRmi6C70ayLzlfdY6ToMAwufNmXY75z2BFcfdRcwzGEh9t/fF1gs1N4tPNlzn9dqRR6yP8GKRUzvb/Xv5/aw5FSYtrfqG4gE/XxqxOQdh0lk9tbfTbaRzLQGzNAw4QEpvKj4H2TU3mFYFWvgm6ntB4SthYkVXsKvhyaio55llTwbrVMlRvlC88nLG8fL5TI7B2z9LYkIpppG93JZhHiNfu0lPFxUyDLAe5GI3wqpAXyM//OpCu/OETeuSbsH3LrL2j3g5l3W3vGecsopp5xyyimnHE92cj&#43;wmcBt2/HlBPwr/wIAAP//6icWXObj7e8AAAAASUVORK5CYII=" alt="captcha"><input class="i" type="text" name="captcha" placeholder="captcha code" maxlength="6"><input name=captcha_id type=hidden value=YQOPr9KnlUjlPPGvQG4c></div><button class="b" type="submit">connect</button>             </form>
+        <div class="info">
+            <h3>about</h3>
+            <p>wss.chat is a real-time, server-side chatroom designed for maximum anonymity and freedom of expression*.<span style="font-size: 0.5em;">*does not apply to Benny.</span></p>
+            <ul>
+                <li>zero javascript</li>
+                <li>anonymous and untracked messaging</li>
+                <li>minimal rules: no spam or pedo content</li>
+                <li>feature rich: live polls, quoting, private messaging, Discord-style emojis</li>
+            </ul>
+            <div><a href="/d"><button style="width:49%;" class="b d">donate</button></a><a href="/m"><button style="width:49%;" class="b m">manifesto</button></a></div>
+            <div class="mabel"><img src="static/mabel.webp" /></div>
+        </div>
+    </div>
+</body>
+
+</html>
+
+<pre style="display:none;">
+
+streets killed me -- 444amyy (my beloved)
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>~ wss.chat</title>
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Segoe UI', sans-serif;
+        }
+        
+        body {
+            background: linear-gradient(160deg, #f5f5f5 0%, #cfcfcf 100%);
+            color: #222;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            transition: background 0.3s ease;
+        }
+        
+        .c {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 60px;
+            width: 100%;
+            max-width: 800px;
+            background: #fff;
+            border: 3px solid #222;
+            border-radius: 12px;
+            padding: 40px;
+            box-shadow: 10px 10px 0 #222;
+            transition: transform 0.2s ease, box-shadow 0.2s ease;
+        }
+        
+        .c:hover {
+            transform: translateY(-3px);
+            box-shadow: 14px 14px 0 #222;
+        }
+        
+        .f {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+            flex: 1 1 300px;
+            min-width: 0;
+        }
+        
+        .f h3 {
+            margin-bottom: 10px;
+            font-size: 1.8rem;
+            border-bottom: 2px solid #222;
+            padding-bottom: 5px;
+            letter-spacing: 0.5px;
+        }
+        
+        .i {
+            padding: 12px 15px;
+            border: 2px solid #222;
+            border-radius: 6px;
+            background: #f5f5f5;
+            font-size: 1rem;
+            transition: all 0.3s ease;
+            outline: none;
+        }
+        
+        .i:hover {
+            transform: translateY(-3px);
+            box-shadow: 5px 5px 0 #222;
+        }
+        
+        .i:focus {
+            transform: translateY(-1px);
+            box-shadow: inset 3px 3px 0 #222;
+            border-color: #000;
+        }
+        
+        .b {
+            padding: 12px;
+            border: 2px solid #222;
+            background: #f5f5f5;
+            cursor: pointer;
+            font-weight: bold;
+            transition: all 0.3s ease;
+        }
+        
+        .b:hover {
+            transform: translateY(-4px);
+            box-shadow: 6px 6px 0 #222;
+        }
+        
+        .b:active {
+            transform: translateY(2px);
+            box-shadow: inset 3px 3px 0 #222;
+            background: #d1d1d1;
+        }
+        
+        .b.d {
+            background: gold;
+        }
+        
+        .b.d:active {
+            background: #e3bf00;
+        }
+        
+        .b.m {
+            background: tomato;
+        }
+        
+        .b.m:active {
+            background: #d63e23;
+        }
+        
+        .cpt {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            align-items: center;
+        }
+        
+        .cpt img {
+            width: 240px;
+            height: 80px;
+            border: 2px solid #222;
+            border-radius: 6px;
+            object-fit: cover;
+            transition: transform 0.2s ease;
+        }
+        
+        .cpt img:hover {
+            transform: translateY(-2px);
+        }
+        
+        .info {
+            flex: 1 1 300px;
+            min-width: 0;
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+            font-size: 0.95rem;
+            line-height: 1.5;
+            border-left: 2px solid #222;
+            padding-left: 20px;
+        }
+        
+        .info h3 {
+            font-size: 1.4rem;
+            border-bottom: 2px solid #222;
+            padding-bottom: 5px;
+            letter-spacing: 0.5px;
+        }
+        
+        .info ul {
+            padding-left: 20px;
+            list-style-type: disc;
+        }
+        
+        .mabel {
+            margin-top: 1rem;
+            display: flex;
+            justify-content: center;
+        }
+        
+        .mabel img {
+            width: 200px;
+            height: auto;
+            max-width: 100%;
+            margin-top: -20px;
+            margin-bottom: -25px;
+        }
+        
+        .error {
+            font-size: 0.9rem;
+            color: #ff3915;
+            font-weight: bold;
+            text-align: center;
+            translate: 0 -13px;
+            margin-bottom: -37px;
+            text-transform: lowercase;
+        }
+        
+        @media (max-width: 768px) {
+            .c {
+                flex-direction: column;
+                gap: 30px;
+                padding: 20px;
+                width: 90%;
+                margin-top: 5rem;
+            }
+            .info {
+                border-left: none;
+                border-top: 2px solid #222;
+                padding-left: 0;
+                padding-top: 15px;
+            }
+            .cpt img {
+                width: 200px;
+                height: 70px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <div class="c">
+        <form class="f" action="/nick" method="POST">
+            <h3 style="display: flex;justify-content: space-between;align-items: baseline;">wss.chat <span style="font-size: 0.5em;font-style: italic;">online: 11</span></h3><input class="i" id="nick" type="text" name="nick" placeholder="username" maxlength="20" required><input class="i" type="password" id="pass"
+                name="pass" placeholder="password (not required for guests)">
+            <div class="cpt"><img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAPAAAABQCAMAAAAQlwhOAAAAP1BMVEUAAABzEkOuTX6iQXKNLF15GEmVNGWiQXLPbp/ObZ7ffq/lhLWrSnuIJ1hzEkPXdqe6WYqwT4Defa7ScaJlBDVJ4/jCAAAAAXRSTlMAQObYZgAABLFJREFUeJzsW&#43;1yqzgMlf5lEpKZ5P0f9k5LsKUjyWBiEy5F3Z1ujbF1dPRlM0unnFIrt9utZvrr9eqnyxZyu1Uhfr0KiKss9y1pCLjSV74kf47hPxfDm8rj8fi2CpvK43FcxDz&#43;sBo8LuAfqKOQhHxUwKxEPjkmXgmYNMX/nywoSRKq5biHdNzALcJ6P8lqb4Z5Mmq/TQxeyMRMPOSBtzadhCnMFb32G/cU5mXmYRjEnI62T6GzEWKWG&#43;ZR4gFnddOAdK7oZVse/2XJMKeg1QB7MqyM2YNjnlY2defn15M8fH09jfVGLbeaHBdaihxAz&#43;eTLMCuBIOGjQGnvKDSxO9AzLDppbuKv9saBVgnKBSCGM7vbVEr5Ga426qqiE6sUBOpyq/6jFY9x7JVHLzV5UrFbLbVNErvf4S7E8Z2NboAy6JJ7HV8VXizE&#43;v17ve75FFZUhbFRniXIHbwlmozpx&#43;cLxhOj&#43;4/ghUwUS4YXo1xDowPgfGlUA1mdHeAqt8ZAeu92GS2hqeGufCwuES&#43;cVYjBooFXaPdrtereOEXsLdlLluNTw3l5JPcC8Z8QxnXxaZ8xIuIXYXUe00PhjOITQEeqXXxMjA8uUJm3gB2N5B9GJkQaSDRcr4vpQxqn4h6k9Ul1TYgw57diEmWgpy7PoOpd438M9jGt4QIbBXoMuA1wR4Oll2mkwUbiLNeagaiV6wryjFQMVTXASIjWMxpDRl0mrvdifSc/lun8cJKEWLHem0Ri53neznv&#43;ZSVZKLJ8/UcvZJZHNfnmfiahVYAodJjYYmAFnlZo&#43;4bSRVYcCVvcbCM0K6AzLuYL1DH9sgSzrRPdTcoXeaNib02wvVodzS1LjFu&#43;BQx7xYmXRQQB6lGNucCuPRLYNhfChXI1tMHKUCcgMJ5ZQHiGbyuQhB5imHp6BDewVJqjHTBU5NYRIZzr1AGsiSAHVrc5SXD5gvC&#43;MfVcRaHPLOy0JPZuzyZ6yDVVjj1XsTL0XWAYpjduL1er/7dpMewo4OARmCDJSVssjy4nWnv8d7JsZHUkiHpzjJMsgyHNx5wO7TcjcFmpDtYihgmbAgKeQZB&#43;XQrNbQq8WFpymHZM5YfrJSF2PWsNNVadJZhfF9vi2oQd&#43;qvcCNHKPcqDDErO8gyw&#43;aJ&#43;MPgr0q0HyAmttQxmxaMdYpAeHrBoHskw6m6yZOZrurov8I0HmjV3kZ50OAqM&#43;xUGdLJcsU9x3pnkLnRY9jj00UcnQ8gbOUVySeXOR85f6pSrNvbKKzCII6uiWAml9LkVsLwK&#43;UnqxWaYaB8XvQqrRmi6C70ayLzlfdY6ToMAwufNmXY75z2BFcfdRcwzGEh9t/fF1gs1N4tPNlzn9dqRR6yP8GKRUzvb/Xv5/aw5FSYtrfqG4gE/XxqxOQdh0lk9tbfTbaRzLQGzNAw4QEpvKj4H2TU3mFYFWvgm6ntB4SthYkVXsKvhyaio55llTwbrVMlRvlC88nLG8fL5TI7B2z9LYkIpppG93JZhHiNfu0lPFxUyDLAe5GI3wqpAXyM//OpCu/OETeuSbsH3LrL2j3g5l3W3vGecsopp5xyyimnHE92cj&#43;wmcBt2/HlBPwr/wIAAP//6icWXObj7e8AAAAASUVORK5CYII=" alt="captcha"><input class="i" type="text" name="captcha" placeholder="captcha code" maxlength="6"><input name=captcha_id type=hidden value=YQOPr9KnlUjlPPGvQG4c></div><button class="b" type="submit">connect</button>             </form>
+        <div class="info">
+            <h3>about</h3>
+            <p>wss.chat is a real-time, server-side chatroom designed for maximum anonymity and freedom of expression*.<span style="font-size: 0.5em;">*does not apply to Benny.</span></p>
+            <ul>
+                <li>zero javascript</li>
+                <li>anonymous and untracked messaging</li>
+                <li>minimal rules: no spam or pedo content</li>
+                <li>feature rich: live polls, quoting, private messaging, Discord-style emojis</li>
+            </ul>
+            <div><a href="/d"><button style="width:49%;" class="b d">donate</button></a><a href="/m"><button style="width:49%;" class="b m">manifesto</button></a></div>
+            <div class="mabel"><img src="static/mabel.webp" /></div>
+        </div>
+    </div>
+</body>
+
+</html>
+
+<pre style="display:none;">
+
+streets killed me -- 444amyy (my beloved)
+
